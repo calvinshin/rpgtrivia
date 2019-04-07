@@ -31,6 +31,12 @@ var game = {
     canvas : document.getElementById("canvas"),
     context : canvas.getContext("2d"),
 
+    // Active variables for the game
+    activeBackground : "",
+    activeMonster1 :  "",
+    activeMonster2 :  "",
+    activeMonster3 : "",
+    activeMonster4 : "",
 
     // functions
     monsterGenerate : function() {
@@ -61,10 +67,11 @@ var game = {
     backgroundGenerate : function() {
         var backgroundImage = new Image();
         backgroundImage.src = game.backgroundArray[Math.floor(Math.random() * game.backgroundArray.length)]
-        backgroundImage.onload = function() {
-            game.context.drawImage(backgroundImage, 0, 0, backgroundImage.width, backgroundImage.height,
-                                                    0, 0, game.canvas.width, game.canvas.height);
-        }
+        game.activeBackground = new component(game.canvas.clientWidth, game.canvas.clientHeight, backgroundImage.src, 0, 0);
+        // backgroundImage.onload = function() {
+        //     game.context.drawImage(backgroundImage, 0, 0, backgroundImage.width, backgroundImage.height,
+        //                                             0, 0, game.canvas.width, game.canvas.height);
+        // }
     }
 }
 
