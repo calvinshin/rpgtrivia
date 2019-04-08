@@ -28,15 +28,15 @@ var game = {
         correctAnswer : 4,
         }
     ],
-    gameArea : {
+    canvasArea : {
         canvas : document.createElement("canvas"),
         start : function() {
-            this.canvas.width = 960;
-            this.canvas.height = 640;
+            this.canvas.width = 480;
+            this.canvas.height = 270;
             this.context = this.canvas.getContext("2d");
             document.body.insertBefore(this.canvas, document.body.childNodes[0]);
             this.frameNo = 0;
-            this.interval = setInterval(game.updateGameArea, 20);
+            this.interval = setInterval(updateGameArea, 20);
             },
         clear : function() {
             this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -47,8 +47,7 @@ var game = {
     },
 
     // Active variables for the game
-    currentQuestion : 0,
-    activeBackground : "",
+    // activeBackground : "",
     activeMonster1 :  "",
     activeMonster2 :  "",
     activeMonster3 : "",
@@ -70,9 +69,9 @@ var game = {
     
             // have to do an onload.... otherwise the drawimage... doesn't work?
             // create a monster at a location, and then offset by i * some value later
-            monster.onload = function() {
-                game.gameArea.context.drawImage(monster, i * 250, 500);
-            };
+            // monster.onload = function() {
+            //     game.context.drawImage(monster, i * 250, 500);
+            // };
     
             // console.log(monsterChosen);
             // console.log(game.monsterObjects[Math.floor(Math.random()) * 2])
@@ -81,46 +80,18 @@ var game = {
         }
     },
     backgroundGenerate : function() {
-        // Create a new image for simplicity sake, but is not actually needed. Could just input the src into the function component
-        var backgroundImage = new Image();
-        backgroundImage.src = game.backgroundArray[Math.floor(Math.random() * game.backgroundArray.length)]
-        game.activeBackground = new game.component(backgroundImage.src, 0, 0, game.gameArea.canvas.width, game.gameArea.canvas.height, "bg");
+        // var backgroundImage;
+        // backgroundImage.src = game.backgroundArray[Math.floor(Math.random() * game.backgroundArray.length)];
+        game.activeBackground = new component(game.canvasArea.context.clientWidth, game.canvasArea.context.clientHeight, game.backgroundArray[Math.floor(Math.random() * game.backgroundArray.length)], 0, 0, "image");
+        // backgroundImage.onload = function() {
+        //     game.context.drawImage(backgroundImage, 0, 0, backgroundImage.width, backgroundImage.height,
+        //                                             0, 0, game.canvas.width, game.canvas.height);
+        // }
     },
-    component : function(source, x, y, width, height, type, object) {
-        this.type = type;
-        this.image = new Image();
-        this.image.src = source;
-        this.width = width;
-        this.height = height;
-        // no speed yet...?
-        // this.speedX = 0;
-        // this.speedY = 0;
-        this.x = x;
-        this.y = y;
-        this.object = object
-        this.update = function() {
-                game.gameArea.context.drawImage(this.image, this.x, this.y, this.width, this.height);
-        };
-        // for monster objects we need to keep more details for the answers. Pulling the entire object allows us to not have to add details but use the object within the object
-            // otherwise, create new attributes from object.
-        // positioning, also not yet required;
-        // this.newPos = function() {
-        //     this.x += this.speedX;
-        //     this.y += this.speedY;        
-        // }    
 
-    },
-    updateGameArea : function() {
-        // game.gameArea.clear();
-        // game.activeBackground.newPos();    
-        game.activeBackground.update();
-        // console.log(game.activeBackground)
-        // game.activeMonster1.newPos();
-        // game.activeMonster1.onload();
-        // game.activeMonster1.update();
-
-        testvariablee.update();
-    },
+    start : function() {
+        
+    }
 }
 
 for(i=0; i < game.monsterList.length; i++) {
@@ -141,27 +112,16 @@ for(i=0; i < game.monsterList.length; i++) {
     // Create the images for death
     monster.death = "assets/images/monsters/" + game.monsterList[i] + "_death.gif"
 
-    // Create the question
-
     // push the entire monster into the monsterObjects array
     game.monsterObjects.push(monster);
 }
 
 
-var testvariablee = "sm";
-testvariablee = new game.component("assets/images/monsters/minotaur_attack.gif", 20, 20, 60, 60, "image");
-console.log(testvariablee)
 
 
-// console.log(game)
-// console.log(game.monsterObjects)
-game.gameArea.start();
+
+console.log(game)
+console.log(game.monsterObjects)
 game.backgroundGenerate();
-
 // document.addEventListener()
-game.monsterGenerate();
-// game.activeBackground.update();
-// console.log(game.activeBackground)
-
-console.log(testvariablee)
-console.log(game.activeBackground)
+// game.monsterGenerate();
