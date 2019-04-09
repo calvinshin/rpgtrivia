@@ -3,7 +3,7 @@
 // Creating the monsterObjects via a function
 
 var game = {
-    monsterList : ["green_dragon", "fire_demon", "ghost", "medusa", "minotaur", "rat", "wolf", "worm"],
+    monsterList : ["green_dragon", "fire_demon", "medusa", "minotaur", "rat", "wolf", "worm"],
     // created dynamically, but is essentially derived from the monsterList to create a single object for each monster
     monsterObjects : [],
     backgroundArray : ["assets/images/background/fantasy-1920-x-1080_full - Copy (2).png",
@@ -44,7 +44,14 @@ var game = {
         },
         stop : function() {
             clearInterval(this.interval);
-        }
+        },
+        click : function() {
+            game.gameArea.canvas.addEventListener("click", function(event) {
+                var x = event.pageX - this.offsetLeft;
+                var y = event.pageY - this.offsetTop;
+                console.log(x, y);
+            });
+        },
     },
 
     // Active variables for the game
@@ -55,6 +62,10 @@ var game = {
     activeMonster2 : "",
     activeMonster3 : "",
     activeMonster4 : "",
+    trivia1 : "",
+    trivia2 : "", 
+    trivia3 : "",
+    trivia4 : "",
 
     // functions
     // Creating the array of objects for monsters. Has no question information, just creates the list of monsters to use in the game.
@@ -94,7 +105,29 @@ var game = {
     // Generates the monsters for the page. Will probably need to add a section to attach the questions.
     monsterGenerate : function() {
         // generate a monster for the number of answers 
-        var chosen = this.monsterObjects[0];
+
+            chosen = this.monsterObjects[0];
+
+
+                                        // probably not needed... can just do the chosen stuff
+
+                                        // chosen1 = chosen;
+                                        // chosen1.answer = game.questionArray[0].answers[1]
+
+                                        // chosen2 = chosen;
+                                        // chosen2.answer = game.questionArray[0].answers[2]
+
+                                        // chosen3 = chosen;
+                                        // chosen3.answer = game.questionArray[0].answers[3]
+
+                                        // chosen4 = chosen;
+                                        // chosen4.answer = game.questionArray[0].answers[4]
+
+            game.trivia1 = new game.triviaText(game.questionArray[0].answers[1], 60, 550, "30px Arial", "white", "left");
+            game.trivia2 = new game.triviaText(game.questionArray[0].answers[2], 310, 550, "30px Arial", "white", "left");
+            game.trivia3 = new game.triviaText(game.questionArray[0].answers[3], 110, 620, "30px Arial", "white", "left");
+            game.trivia4 = new game.triviaText(game.questionArray[0].answers[4], 360, 620, "30px Arial", "white", "left");
+
         // var image = new Image();
         // image.src = chosen.idle;
         // image.onload = function() {
@@ -109,7 +142,7 @@ var game = {
             
         // }
         // What's happening is that things aren't... working in order
-        console.log(game.activeMonster1)
+        // console.log(game.activeMonster1)
 
         // for(let i=1; i < 5; i++) {
         //     // choose a random monster and set it to the variable monsterChosen
@@ -169,6 +202,14 @@ var game = {
         //     this.x += this.speedX;
         //     this.y += this.speedY;        
         // }    
+    },
+    triviaText : function(text, x, y, size, color, align) {
+        this.update = function() {
+            game.gameArea.context.font = size;
+            game.gameArea.context.fillStyle = color;
+            game.gameArea.context.textAlign = align;
+            game.gameArea.context.fillText(text, x, y);
+        }
 
     },
     updateGameArea : function() {
@@ -179,6 +220,10 @@ var game = {
         game.activeMonster2.update();
         game.activeMonster3.update();
         game.activeMonster4.update();
+        game.trivia1.update();
+        game.trivia2.update();
+        game.trivia3.update();
+        game.trivia4.update();
         // Ensure this last variable is always on bottom so that the image is always drawn last
         testvariablee.update();
     },
@@ -197,12 +242,14 @@ var game = {
     start : function() {
         game.gameArea.start();
         game.roundStart();
+        game.gameArea.click();
         console.log(game.activeMonster1)
         console.log(game.activeBackground)
     },
     // Separated out because there needs to be an intro/opening page which will need to be drawn prior to a round starting
     roundStart : function() {
         game.monsterSelection();
+        game.shuffle(game.questionArray);
         game.shuffle(game.monsterObjects);
         game.monsterGenerate();
         game.backgroundGenerate();
