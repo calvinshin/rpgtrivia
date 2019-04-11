@@ -10,14 +10,34 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 <!-- Personal Stylesheet -->
     <link rel="stylesheet" href="assets/css/main.css">
+<!-- Didn't make this; just pulled it and modified it a little.  -->
+    <link rel="stylesheet" href="assets/css/timer.css">
+
 </head>
 <body>
-    <div id="gamediv">
-        <div id="question">
-        </div>
-        <div id="answers">
-        </div>
+    <div id="gamediv" class="hidden">
     </div>
+
+<div id="counterdiv">
+    <svg height="100%">
+        <!--  " -->
+        <defs>
+            <filter id="goo">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"></feGaussianBlur>
+                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -5" result="goo"></feColorMatrix>
+                <feComposite in="SourceGraphic" in2="goo" operator="atop"></feComposite>
+            </filter>
+        </defs>
+        <g filter="url(#goo)">
+            <text x="0" y="150">5</text>
+            <text x="0" y="150">4</text>
+            <text x="0" y="150">3</text>
+            <text x="0" y="150">2</text>
+            <text x="0" y="150">1</text>
+            <text x="0" y="150">!</text>
+        </g>
+    </svg>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="assets/javascript/main.js"></script>

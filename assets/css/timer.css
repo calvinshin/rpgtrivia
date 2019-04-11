@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css?family=Overpass+Mono:600');
+
+#counterdiv {
+    /* position: relative; */
+    /* left: 50vw; */
+    width: auto;
+    margin: auto
+}
+
+svg {
+  /* margin: auto; */
+  width: 240px;
+  height: 240px;
+}
+g > text {
+  /* text-anchor: middle; */
+  font-size: 200px;
+  font-family: Overpass Mono, monospace;
+  fill: hsl(0, 72%, 39%);
+  opacity: 0;
+  animation-name: opac;
+  animation-duration: 6s;
+  animation-timing-function: linear;
+/*   animation-iteration-count: infinite; */
+}
+g > text:nth-child(1) { animation-delay: 0s; }
+g > text:nth-child(2) { animation-delay: 1s; }
+g > text:nth-child(3) { animation-delay: 2s; }
+g > text:nth-child(4) { animation-delay: 3s; }
+g > text:nth-child(5) { animation-delay: 4s; }
+g > text:nth-child(6) { animation-delay: 5s; }
+
+@keyframes opac {
+  0% { opacity: 0; }
+  7.5% { opacity: 1; }
+  10% { opacity: 1; }
+  15% { opacity: 0; }
+  100% { opacity: 0; }
+}
