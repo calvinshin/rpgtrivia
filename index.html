@@ -15,29 +15,8 @@
 
 </head>
 <body>
-    <div id="gamediv" class="hidden">
+    <div id="gamediv">
     </div>
-
-<div id="counterdiv">
-    <svg height="100%">
-        <!--  " -->
-        <defs>
-            <filter id="goo">
-                <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"></feGaussianBlur>
-                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -5" result="goo"></feColorMatrix>
-                <feComposite in="SourceGraphic" in2="goo" operator="atop"></feComposite>
-            </filter>
-        </defs>
-        <g filter="url(#goo)">
-            <text x="0" y="150">5</text>
-            <text x="0" y="150">4</text>
-            <text x="0" y="150">3</text>
-            <text x="0" y="150">2</text>
-            <text x="0" y="150">1</text>
-            <text x="0" y="150">!</text>
-        </g>
-    </svg>
-</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="assets/javascript/main.js"></script>

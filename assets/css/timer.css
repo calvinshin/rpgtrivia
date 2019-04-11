@@ -3,18 +3,20 @@
 #counterdiv {
     /* position: relative; */
     /* left: 50vw; */
-    width: auto;
-    margin: auto
+    width: 240px;   
+    margin: auto;
+    -moz-transform: scale(0.5);
+    zoom: 0.75;
 }
 
 svg {
   /* margin: auto; */
-  width: 240px;
+  width: 360px;
   height: 240px;
 }
 g > text {
   /* text-anchor: middle; */
-  font-size: 200px;
+  font-size: 400px;
   font-family: Overpass Mono, monospace;
   fill: hsl(0, 72%, 39%);
   opacity: 0;

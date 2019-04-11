@@ -26,11 +26,13 @@ var game = {
 
     // Cap the amount of damage that a character can have to a certain amount, say 20.
     roundDamage : 0,
-    maxDamage : 20,
+    maxDamage : 25,
     heroHeal : 10,
 
     // isvariables for different modes of the game
     isGuessing : false,
+
+    // timer intervals to clear/set
     autoRound : "",
     autoDamage : "",
 
@@ -60,7 +62,7 @@ var game = {
             // creating the name of the monster with it capitalized
             monster.name = game.monsterList[i].charAt(0).toLocaleUpperCase() + game.monsterList[i].slice(1);
             if(monster.name.indexOf("_") === -1) {
-                // nothing happens
+                // nothing happens if there is no _ character
             }
             else {
                 // Removing a single _ in the name and replacing it with a space
@@ -77,10 +79,7 @@ var game = {
             monster.onload = function() {
                 monster.width = monster.idle.naturalWidth;
                 monster.height = monster.idle.naturalHeight;
-            }
-        
-            // Create the question
-        
+            }     
             // push the entire monster into the monsterObjects array
             game.monsterObjects.push(monster);
         }
@@ -96,52 +95,77 @@ var game = {
             })
     },
     shuffle : function(array) {
-        // console.log(array);
         for(i=0; i<array.length; i++) {
             var newPosition = Math.floor(Math.random() * array.length);
-            // console.log(newPosition);
             var held = array[newPosition];
-            // console.log(held);
             array[newPosition] = array[i];
             array[i] = held;
         }
-        // console.log(array);
     },
 
     roundSetup : function() {
         var questionDiv = document.createElement("div");
-        questionDiv.id = "question";
+            questionDiv.id = "question";
         document.getElementById("gamediv").append(questionDiv);
 
+        var backgroundImg = new Image();
+            backgroundImg.src = game.backgroundArray[Math.floor(Math.random() * game.backgroundArray.length)];
+            backgroundImg.id = "backgroundimg"
+        document.getElementById("gamediv").append(backgroundImg)
+
         var answerDiv = document.createElement("div");
-        answerDiv.id = "answers";
+            answerDiv.id = "answers";
         document.getElementById("gamediv").append(answerDiv);
 
         var scoreDiv = document.createElement("div");
-        scoreDiv.id = "score";
-        scoreDiv.innerHTML = "Score : <div id='scorevalue'>0</div>";
+            scoreDiv.id = "score";
+            scoreDiv.innerHTML = "Score : <div id='scorevalue'>0</div>";
         document.getElementById("gamediv").append(scoreDiv);
 
         var heroDiv = document.createElement("div");
-        heroDiv.id = "hero";
-        
-        // Insert image
-        heroImage = new Image();
-        heroImage.src = game.heroObject.idle;
-        heroImage.id = "heroImage";
-        heroDiv.append(heroImage);
-
-        // Insert HP
-        var heroHPDiv = document.createElement("div");
-        heroHPDiv.id = "herohptext"
-        heroHPDiv.innerText = game.heroHP;
-        heroDiv.append(heroHPDiv);
-
+            heroDiv.id = "hero";
+            // Insert image
+            heroImage = new Image();
+            heroImage.src = game.heroObject.idle;
+            heroImage.id = "heroImage";
+            heroDiv.append(heroImage);
+            // Insert HP
+            var heroHPDiv = document.createElement("div");
+            heroHPDiv.id = "herohptext"
+            heroHPDiv.innerText = game.heroHP;
+            heroDiv.append(heroHPDiv);
         document.getElementById("gamediv").append(heroDiv);
+
+        var counterdiv = document.createElement("div");
+            counterdiv.id = counterdiv
+            counterdiv.innerHTML = 
+                '<div id="counterdiv">\n' +
+                    '<svg viewBox="-400 -200 1000 1000" height="100%">\n' +
+                        '<!--  " -->\n' +
+                        '<defs>\n' +
+                            '<filter id="goo">\n' +
+                                '<feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"></feGaussianBlur>\n' +
+                                '<feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -5" result="goo"></feColorMatrix>\n' +
+                                '<feComposite in="SourceGraphic" in2="goo" operator="atop"></feComposite>\n' +
+                                '<circle fill="#000000" cx="0" cy="0" r="200" />\n' +
+                            '</filter>\n' +
+                        '</defs>\n' +
+                        '<g filter="url(#goo)">\n' +
+                            '<text x="0" y="150">5</text>\n' +
+                            '<text x="0" y="150">4</text>\n' +
+                            '<text x="0" y="150">3</text>\n' +
+                            '<text x="0" y="150">2</text>\n' +
+                            '<text x="0" y="150">1</text>\n' +
+                            '<text x="0" y="150">!</text>\n' +
+                        '</g>\n' +
+                    '</svg>\n' +
+                '</div>\n'
+        document.getElementById("gamediv").append(counterdiv);
+
+
     },
 
     questionPick : function() {
-        console.log("the quesitonPick is starting!")
         game.isGuessing = true;
         // Reset roundDamage to 0.
         game.roundDamage = 0;
@@ -153,6 +177,7 @@ var game = {
         var questiondiv = document.createElement("div");
         // Push the question div into the question section of the array
         questiondiv.innerHTML = question.question;
+        questiondiv.id = "questiontext";
         document.getElementById("question").append(questiondiv);
 
         // Create an array that will eventually have four divs
@@ -308,7 +333,7 @@ var game = {
         game.monsterSelection();
         // Shuffles the monsterobjects
         game.shuffle(game.monsterObjects);
-
+        game.shuffle(game.backgroundArray)
 
 
 

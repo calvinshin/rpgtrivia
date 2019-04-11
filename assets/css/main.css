@@ -1,9 +1,8 @@
 body {
-    /* background-color: yellow; */
 }
 
 div {
-    border: black 1px solid;
+    width: auto;
 }
 
 #gamediv {
@@ -16,18 +15,101 @@ div {
     transform: translate(-50%, -50%)
 }
 
-.answertext {
-    display: inline-block;
+#backgroundimg {
+    z-index: -3;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 960px;
+    height: 640px;
 }
 
-#scorevalue {
-    display: inline-block;
+#question {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.5);
+    width: 960px;
+    padding: 10px;
+    z-index: -1;
+    height: 220px;
 }
 
-#heroImage {
-    -webkit-transform: scaleX(-1) scale(2);
-    transform: scaleX(-1) scale(2);
+    #questiontext {
+        font-size: 36px; 
+        position: absolute;
+        top: 50%;
+        transform: translate(0%, -50%);
+    }
+
+#answers {
+    position: absolute;
+    bottom: 0;
+    left: 0px;
 }
+
+    .answer {
+        background: rgba(255, 255, 255, 0.5); 
+        height: 80px;
+        border: white 2px solid;
+        border-radius: 0px 15px 15px 0px;
+        padding-left: 15px;
+        width: 400px;
+        position: relative;
+    }
+
+    .answer:hover {
+        background: rgba(187, 189, 90, 0.424); 
+    }
+
+    .answertext {
+        /* display: inline-block; */
+        font-size: 24px;
+        position: absolute;
+        top: 50%;
+        left: 20px;
+        transform: translate(0%, -50%);
+    }
+
+    .monsterimage {
+        position: absolute;
+        top: 50%;
+        transform: translate(0%, -50%);
+        left: 800px;
+        animation-name: answersmoving;
+        animation-duration: 5s;
+        animation-iteration-count: 1;
+        animation-timing-function: ease-in;
+        z-index: 1;
+    }
+    
+    @keyframes answersmoving {
+        from {left: 0px;}
+        to {left: 800px;}
+    }
+
+
+#score {
+    background-color: white;
+    position: absolute;
+    top: 220px;
+    padding: 5px 15px;
+    right: 0px;
+}
+
+    #scorevalue {
+        display: inline-block;
+    }
+
+#hero {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    padding: 20px;
+}
+
+    #heroImage {
+        -webkit-transform: scaleX(-1) scale(2);
+        transform: scaleX(-1) scale(2);
+    }
 
 .hidden {
     display: none;
