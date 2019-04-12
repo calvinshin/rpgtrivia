@@ -8,7 +8,7 @@ div {
 #gamediv {
     width: 960px;
     height: 640px;
-    background-color: yellow;
+    background-color: black;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -109,6 +109,34 @@ div {
     #heroImage {
         -webkit-transform: scaleX(-1) scale(2);
         transform: scaleX(-1) scale(2);
+    }
+
+/* Need hero hp */
+
+
+#roundEndDiv{
+    position: absolute;
+    right: 50%;
+    top: 50%;
+    transform: translate(50%, -50%);
+    background-color: rgba(255, 255, 255, 0.822);
+    border-radius: 15px;
+    width: 400px;
+    height: 250px;
+    padding: 20px;
+    font-size: 20px;
+    text-align: center;
+    z-index: 3;
+}
+
+    #roundEndButton {
+        background-color: rgb(57, 224, 79);
+        position: absolute;
+        bottom: 20px;
+        right: 50%;
+        transform: translate(50%, 0%);
+        padding: 20px;
+        border-radius: 5px;
     }
 
 .hidden {

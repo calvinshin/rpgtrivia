@@ -33,8 +33,12 @@ var game = {
     isGuessing : false,
 
     // timer intervals to clear/set
-    autoRound : "",
-    autoDamage : "",
+        // triggers the next round happening
+        autoRound : "",
+        // triggers the damage
+        autoDamage : "",
+        // triggers the countdown before damage starts (5 seconds)
+        autoDamageCountdown : "",
 
     // functions
 
@@ -84,6 +88,7 @@ var game = {
             game.monsterObjects.push(monster);
         }
     },
+
     triviaPull : function(category) {
         $.ajax({
             url: "https://opentdb.com/api.php?amount=" + game.gameLength,
@@ -94,6 +99,7 @@ var game = {
               console.log("questions pulled!")
             })
     },
+
     shuffle : function(array) {
         for(i=0; i<array.length; i++) {
             var newPosition = Math.floor(Math.random() * array.length);
@@ -227,7 +233,17 @@ var game = {
     // Stop damageTimer on questionClick
 
     damageTimer : function() {
-
+        // Set the timer for executing the function to 5 seconds.
+        game.autoDamageCountdown = setTimeout(function() {
+            // Set auto damage at 5 hp per second, done at 1/200ms
+            game.autoDamage = setInterval(function() {
+                game.heroHP -= 1;
+                document.getElementById("herohptext").innerText = game.heroHP;
+                if(game.heroHP <= 0) {
+                    game.gameOver();
+                }
+            }, 200)
+        }, 5000)
     },
 
     // Click on the question and evaluate whether the answer was correct or not.
@@ -239,7 +255,8 @@ var game = {
                     // Correct answer was picked by comparing innerHTML to the currentanswer;
                     // childnodes[1] is currently the answer text of the first child div
                     var resultText = "";
-                    game.isGuessing = false;
+                    document.getElementById(counterdiv).classList.add("hidden");
+
                     if(this.childNodes[1].innerHTML === game.currentAnswer) {
                         // Should increase the score by one
                         game.score ++;
@@ -266,10 +283,11 @@ var game = {
                     else{
                         // Should show the correct answer.
                         resultText = "Correct Answer : " + game.currentAnswer;
-                        // Should make the hero trigger damage capped at 20.
                         game.incorrect ++;
-                        game.heroHP -= game.maxDamage - game.roundDamage;
-
+                        // Should make the hero trigger damage capped at 20 if roundDamage <20
+                        if(game.roundDamage <= 20) {
+                            game.heroHP -= game.maxDamage - game.roundDamage;
+                        }
                         document.getElementById("herohptext").innerText = game.heroHP;
                         // monsters attack!
                         var monsterattacks = document.getElementsByClassName("monsterimage");
@@ -281,6 +299,12 @@ var game = {
                     // Check if the user is dead or not
                     // If not dead, get the next round ready!
                     if(game.heroHP > 0) {
+                        // turn off guessing
+                        game.isGuessing = false;
+                        // Stop all timers from running:
+                        clearInterval(game.autoDamage);
+                        clearInterval(game.autoDamageCountdown);
+
                         // Create a new div as a popup
                         var roundEnd = document.createElement("div");
                         roundEnd.id = "roundEndDiv";
@@ -306,20 +330,7 @@ var game = {
                     }
                     // Death so reset.
                     else{
-                        // Create a new div as a popup
-                        var roundEnd = document.createElement("div");
-                        roundEnd.id = "roundEndDiv";
-                        roundEnd.innerHTML = "You ran out of HP.<br>Game Over.";
-                        roundEndButton = document.createElement("div");
-                        roundEndButton.innerText = "Quit"
-                        roundEndButton.id = "roundEndButton"
-                        roundEndButton.classList = "button"
-                        document.getElementById("gamediv").append(roundEnd);
-                        // Add a listener for the new roundEndButton
-                        document.getElementById("roundEndDiv").onclick = function() {
-                            game.gameOver();
-                        
-                        }
+                        game.gameOver();
                     }
                 }
             }
@@ -334,8 +345,6 @@ var game = {
         // Shuffles the monsterobjects
         game.shuffle(game.monsterObjects);
         game.shuffle(game.backgroundArray)
-
-
 
         // Added trivia pull at the beginning for testing. Should make a promise on the triviapull to do the roundstart.
         game.triviaPull();
@@ -370,6 +379,28 @@ var game = {
     },
 
     gameOver : function() {
+        // Stop a few functions from running
+        game.isGuessing = false;
+        // Stop all timers from running:
+        clearInterval(game.autoDamage);
+        clearInterval(game.autoDamageCountdown);
+        // Create a new div as a popup
+        var roundEnd = document.createElement("div");
+        roundEnd.id = "roundEndDiv";
+        roundEnd.innerHTML = "Correct Answer : " + game.currentAnswer + "<br>You ran out of HP.<br>Correct : " + game.score + " Incorrect : " + game.incorrect;
+        roundEndButton = document.createElement("div");
+        roundEndButton.innerText = "Quit";
+        roundEndButton.id = "roundEndButton";
+        roundEndButton.classList = "button";
+        roundEnd.append(roundEndButton);
+        document.getElementById("gamediv").append(roundEnd);
+        // Add a listener for the new roundEndButton
+        document.getElementById("roundEndButton").onclick = function() {
+            game.gameOverReset();
+        }
+    },
+
+    gameOverReset : function() {
         document.getElementById("gamediv").innerHTML = "";
         questionArray = [];
         game.start();
