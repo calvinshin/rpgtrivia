@@ -16,13 +16,17 @@ var game = {
         idle : "assets/images/1. Characters/Knight/GIF/knight_jump.gif",
         attack : "assets",
         hit : "assets/images/1. Characters/Knight/GIF/knight_hit.gif",
+        dead : "assets/images/1. Characters/Knight/PNG/knight_die_005.png"
     },
 
     // AJAX variables for the game
     gameLength : 10,
+    // options available are easy, medium hard, random
+    gameDifficulty : "random",
 
     // Other variables for the game
     questionListeners : [],
+    difficultyListeners : [],
 
     // Cap the amount of damage that a character can have to a certain amount, say 20.
     roundDamage : 0,
@@ -48,6 +52,8 @@ var game = {
         game.currentQuestion = 0;
         game.currentAnswer = "";
         game.score = 0;
+        // Could do score as a calculation of correct - incorrect, floored at 0.
+        // game.correct = 0;
         game.incorrect = 0;
         game.questionArray = [];
 
@@ -89,15 +95,83 @@ var game = {
         }
     },
 
+    titleScreen : function() {
+        // Set a background
+        var backgroundImg = new Image();
+        backgroundImg.src = "assets/images/other/world_map_wallpaper.png";
+        backgroundImg.id = "backgroundimg";
+        document.getElementById("gamediv").append(backgroundImg);
+
+        // Set title screen
+        var titletext = document.createElement("div");
+        titletext.innerHTML = "RPG Trivia";
+        titletext.id = "titletext";
+        document.getElementById("gamediv").append(titletext);
+
+        // Toggle options for trivia difficulty. 4 options, Easy, Medium, Hard, Random
+        var difficulty = ["random", "easy", "medium", "hard"]
+        // Create a div buttonContainer to insert all the buttons
+        var buttonContainer = document.createElement("div");
+        buttonContainer.id = "buttonContainer";
+        buttonContainer.innerHTML = "Difficulty<p>";
+
+        for(i = 0; i < difficulty.length; i++) {
+            var button = document.createElement("div");
+            button.innerText = game.capitalize(difficulty[i]);
+            button.setAttribute("difficulty", difficulty[i]);
+            button.classList = "difficultyButtons";
+            // append the div into the button container
+            buttonContainer.append(button);
+        }
+        // append buttoncontainer to the gamediv
+        document.getElementById("gamediv").append(buttonContainer);
+        
+        // Add a listener for the buttons
+        // buttons = document.getElementsByClassName("difficultyButtons")
+        game.difficultyListeners = document.getElementsByClassName("difficultyButtons");
+        game.difficultyListeners[0].classList.add("active");
+
+        for(i = 0; i < difficulty.length; i++) {
+            document.getElementsByClassName("difficultyButtons")[i].onclick = function() {
+                for(j = 0; j < game.difficultyListeners.length; j++) {
+                    game.difficultyListeners[j].classList.remove("active")
+                };
+                this.classList.add("active");
+                game.difficulty = this.getAttribute("difficulty");
+            }
+        }
+
+        // Create a start button
+        var startButton = document.createElement("div");
+        startButton.id = "startButton";
+        startButton.innerHTML = "Start!";
+        document.getElementById("gamediv").append(startButton);
+        // Add a listener for the startButton
+        document.getElementById("startButton").onclick = function() {
+            game.titleScreenStart();
+        }
+    },
+
     triviaPull : function(category) {
-        $.ajax({
-            url: "https://opentdb.com/api.php?amount=" + game.gameLength,
-            method: "GET"
-            }).then(function(response) {
-              game.questionArray = response.results
-              console.log(game.questionArray)
-              console.log("questions pulled!")
-            })
+        if(game.gameDifficulty === "random") {
+            $.ajax({
+                url: "https://opentdb.com/api.php?amount=" + game.gameLength,
+                method: "GET"
+                }).then(function(response) {
+                game.questionArray = response.results;
+                document.getElementById("gamediv").innerHTML = "";
+                game.roundStart();
+                })
+        } else{
+            $.ajax({
+                url: "https://opentdb.com/api.php?amount=" + game.gameLength + "&difficulty=" + game.gameDifficulty,
+                method: "GET"
+                }).then(function(response) {
+                game.questionArray = response.results;
+                document.getElementById("gamediv").innerHTML = "";
+                game.roundStart();
+                })
+        };
     },
 
     shuffle : function(array) {
@@ -109,6 +183,10 @@ var game = {
         }
     },
 
+    capitalize : function(string) {
+        return string.charAt(0).toLocaleUpperCase() + string.slice(1);
+    },
+
     roundSetup : function() {
         var questionDiv = document.createElement("div");
             questionDiv.id = "question";
@@ -116,8 +194,8 @@ var game = {
 
         var backgroundImg = new Image();
             backgroundImg.src = game.backgroundArray[Math.floor(Math.random() * game.backgroundArray.length)];
-            backgroundImg.id = "backgroundimg"
-        document.getElementById("gamediv").append(backgroundImg)
+            backgroundImg.id = "backgroundimg";
+        document.getElementById("gamediv").append(backgroundImg);
 
         var answerDiv = document.createElement("div");
             answerDiv.id = "answers";
@@ -125,7 +203,7 @@ var game = {
 
         var scoreDiv = document.createElement("div");
             scoreDiv.id = "score";
-            scoreDiv.innerHTML = "Score : <div id='scorevalue'>0</div>";
+            scoreDiv.innerHTML = "Score : <div id='scorevalue'>" + game.score + "</div>";
         document.getElementById("gamediv").append(scoreDiv);
 
         var heroDiv = document.createElement("div");
@@ -137,15 +215,17 @@ var game = {
             heroDiv.append(heroImage);
             // Insert HP
             var heroHPDiv = document.createElement("div");
-            heroHPDiv.id = "herohptext"
+            heroHPDiv.id = "herohptext";
+            var heroHPRemaining = document.createElement("div");
+            heroHPRemaining.id = "herohpremaining";
+            heroHPDiv.width = "120px";
             heroHPDiv.innerText = game.heroHP;
             heroDiv.append(heroHPDiv);
         document.getElementById("gamediv").append(heroDiv);
 
         var counterdiv = document.createElement("div");
-            counterdiv.id = counterdiv
+            counterdiv.id = "counterdiv";
             counterdiv.innerHTML = 
-                '<div id="counterdiv">\n' +
                     '<svg viewBox="-400 -200 1000 1000" height="100%">\n' +
                         '<!--  " -->\n' +
                         '<defs>\n' +
@@ -164,8 +244,7 @@ var game = {
                             '<text x="0" y="150">1</text>\n' +
                             '<text x="0" y="150">!</text>\n' +
                         '</g>\n' +
-                    '</svg>\n' +
-                '</div>\n'
+                    '</svg>\n';
         document.getElementById("gamediv").append(counterdiv);
 
 
@@ -192,7 +271,7 @@ var game = {
         for(i = 0; i < question.incorrect_answers.length + 1; i++) {
             var parentanswerdiv = document.createElement("div");
             parentanswerdiv.setAttribute("value", i);
-            parentanswerdiv.classList.add("answer")
+            parentanswerdiv.classList.add("answer");
             // insert in the image of the monster
             var monster = new Image();
             monster.src = game.monsterObjects[0].idle;
@@ -208,7 +287,7 @@ var game = {
                 // adds the correct answer to the div as well
                 else {
                 answerdiv.innerHTML = question.correct_answer;
-                }
+                };
 
             // append the answerdiv to the parentanswerdiv
             parentanswerdiv.append(answerdiv);
@@ -220,7 +299,7 @@ var game = {
         game.shuffle(answerArray);
         // push the divs inside of the question section of the array.
         for(i = 0; i < answerArray.length; i++) {
-            document.getElementById("answers").append(answerArray[i])
+            document.getElementById("answers").append(answerArray[i]);
         };
         // Update the currentAnswer
         game.currentAnswer = question.correct_answer;
@@ -242,8 +321,8 @@ var game = {
                 if(game.heroHP <= 0) {
                     game.gameOver();
                 }
-            }, 200)
-        }, 5000)
+            }, 200);
+        }, 5000);
     },
 
     // Click on the question and evaluate whether the answer was correct or not.
@@ -255,7 +334,7 @@ var game = {
                     // Correct answer was picked by comparing innerHTML to the currentanswer;
                     // childnodes[1] is currently the answer text of the first child div
                     var resultText = "";
-                    document.getElementById(counterdiv).classList.add("hidden");
+                    document.getElementById("counterdiv").classList.add("hidden");
 
                     if(this.childNodes[1].innerHTML === game.currentAnswer) {
                         // Should increase the score by one
@@ -267,22 +346,18 @@ var game = {
                         document.getElementById("herohptext").innerText = game.heroHP;
                         // Should also make the hero cheer... probably
                         // Should insert resultText to Congratulations!
-                        resultText = "Correct!"
+                        resultText = "<p></p>Correct!"
 
                         // All the images should change to death images and then disappear...?
                         var monsterdeaths = document.getElementsByClassName("monsterimage");
                         for(i = 0; i < monsterdeaths.length; i++) {
                             monsterdeaths[i].src = game.monsterObjects[0].death;
-                            // console.log(monsterdeaths[i])
-                            // setInterval(function() {
-                            //     monsterdeaths[i].parentNode.removeChild();
-                            // }, 1000)
                         }
                     }
                     // Incorrect answer was picked
                     else{
                         // Should show the correct answer.
-                        resultText = "Correct Answer : " + game.currentAnswer;
+                        resultText = "<p></p>Correct Answer : " + game.currentAnswer;
                         game.incorrect ++;
                         // Should make the hero trigger damage capped at 20 if roundDamage <20
                         if(game.roundDamage <= 20) {
@@ -346,12 +421,14 @@ var game = {
         game.shuffle(game.monsterObjects);
         game.shuffle(game.backgroundArray)
 
+        game.titleScreen();
+    },
+
+    titleScreenStart : function() {
+        // Want to add a game loading screen here...?
+
         // Added trivia pull at the beginning for testing. Should make a promise on the triviapull to do the roundstart.
         game.triviaPull();
-        // Added here for now, but there should be a start window that then starts the game
-        setTimeout(function() {
-            game.roundStart();
-        }, 1500);
     },
 
     // Separated out because there needs to be an intro/opening page which will need to be drawn prior to a round starting
@@ -376,6 +453,9 @@ var game = {
         document.getElementById("gamediv").innerHTML = "";
         game.shuffle(game.monsterObjects);
         game.roundStart();
+        if(game.questionArray.length === 0) {
+            game.triviaPull();
+        }
     },
 
     gameOver : function() {
@@ -384,6 +464,8 @@ var game = {
         // Stop all timers from running:
         clearInterval(game.autoDamage);
         clearInterval(game.autoDamageCountdown);
+        // Death of character
+        document.getElementById("heroImage").src = game.heroObject.dead;
         // Create a new div as a popup
         var roundEnd = document.createElement("div");
         roundEnd.id = "roundEndDiv";

@@ -1,3 +1,6 @@
+/* font-family: 'Orbitron', sans-serif; */
+/* font-family: 'Press Start 2P', cursive; */
+
 body {
 }
 
@@ -8,12 +11,90 @@ div {
 #gamediv {
     width: 960px;
     height: 640px;
-    background-color: black;
+    background-color: white;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%)
 }
+
+#titletext {
+    position: relative;
+    top: 10%;
+
+    /* Pulled from https://codepen.io/kemch/pen/Ewdpz */
+    /* No work was done to edit this */
+    text-align: center;
+    font-weight: normal;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 8em;
+    white-space: nowrap;
+    font-size: 140px;
+    z-index: 1000;
+    font-family: 'Bangers', cursive;
+    text-shadow: 5px 5px 0 rgba(0, 0, 0, 0.7);
+    -moz-transform: skew(0, -6.7deg);
+    -ms-transform: skew(0, -6.7deg);
+    -webkit-transform: skew(0, -6.7deg);
+    transform: skew(0, -6.7deg);
+    -moz-transition-property: font-size;
+    -o-transition-property: font-size;
+    -webkit-transition-property: font-size;
+    transition-property: font-size;
+    -moz-transition-duration: 0.5s;
+    -o-transition-duration: 0.5s;
+    -webkit-transition-duration: 0.5s;
+    transition-duration: 0.5s;
+    zoom: .7;
+}
+
+    #buttonContainer {
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        width: 100%;
+        text-align: center;
+        transform: translate(-50%, 0%);
+        font-size: xx-large;
+        color: white;
+    }
+
+    .difficultyButtons {
+        background-color: white;
+        color: black;
+        padding: 10px;
+        border-radius: 5px;
+        display: inline-block;
+        margin: 0px 20px;
+        width: 100px;
+        font-weight: bold;
+        font-size: medium;
+    }
+
+    .difficultyButtons:hover {
+        box-shadow: yellow 0px 0px 8px;
+    }
+
+    .active {
+        background-color: rgb(57, 224, 79);
+    }
+
+    #startButton {
+        background-color: white;
+        position: absolute;
+        bottom: 100px;
+        right: 50%;
+        transform: translate(50%, 0%);
+        padding: 20px;
+        border-radius: 5px;
+        font-weight: bold;
+    }
+
+    #startButton:hover {
+        background-color: rgb(57, 224, 79);
+    }
+
 
 #backgroundimg {
     z-index: -3;
@@ -38,6 +119,7 @@ div {
         position: absolute;
         top: 50%;
         transform: translate(0%, -50%);
+        padding: 10px;
     }
 
 #answers {
@@ -47,7 +129,7 @@ div {
 }
 
     .answer {
-        background: rgba(255, 255, 255, 0.5); 
+        background: rgba(255, 255, 255, 0.644); 
         height: 80px;
         border: white 2px solid;
         border-radius: 0px 15px 15px 0px;
@@ -57,7 +139,7 @@ div {
     }
 
     .answer:hover {
-        background: rgba(187, 189, 90, 0.424); 
+        background: rgba(187, 189, 90, 0.808); 
     }
 
     .answertext {
@@ -73,17 +155,17 @@ div {
         position: absolute;
         top: 50%;
         transform: translate(0%, -50%);
-        left: 800px;
+        left: 790px;
         animation-name: answersmoving;
         animation-duration: 5s;
         animation-iteration-count: 1;
         animation-timing-function: ease-in;
-        z-index: 1;
+        z-index: 2;
     }
     
     @keyframes answersmoving {
         from {left: 0px;}
-        to {left: 800px;}
+        to {left: 780px;}
     }
 
 
@@ -101,8 +183,8 @@ div {
 
 #hero {
     position: absolute;
-    right: 0px;
-    bottom: 0px;
+    right: 20px;
+    bottom: 20px;
     padding: 20px;
 }
 
@@ -111,7 +193,18 @@ div {
         transform: scaleX(-1) scale(2);
     }
 
-/* Need hero hp */
+    #herohptext {
+        background-color: white;
+        width: 60px;
+        position: absolute;
+        right: 20px;
+        z-index: 4;
+        padding-left: 5px;
+    }
+
+    #herohpremaining {
+        background-color: green;
+    }
 
 
 #roundEndDiv{
@@ -119,7 +212,7 @@ div {
     right: 50%;
     top: 50%;
     transform: translate(50%, -50%);
-    background-color: rgba(255, 255, 255, 0.822);
+    background-color: rgb(255, 255, 255);
     border-radius: 15px;
     width: 400px;
     height: 250px;
@@ -130,13 +223,17 @@ div {
 }
 
     #roundEndButton {
-        background-color: rgb(57, 224, 79);
         position: absolute;
         bottom: 20px;
         right: 50%;
         transform: translate(50%, 0%);
         padding: 20px;
         border-radius: 5px;
+        /* border: 1px black solid; */
+        width: 200px;
+    }
+    #roundEndButton:hover {
+        background-color: rgb(57, 224, 79);
     }
 
 .hidden {
